@@ -1,9 +1,21 @@
 import re
 import os
 import string
-from subprocess import *
+import subprocess
+
+class VcsCommitSnifferException(Exception):
+    pass
 
 class VcsCommitSniffer:
+    options = {
+        'php' : {
+            'extensions'   : ['php', 'php4', 'php5'],
+            'check_syntax' : 'php -l %file%',
+            'check_cs'     : 'phpcs --standard=zend --report=emacs %file%'
+        }
+    }
+
+    # Sniffers list
     CHECK_PHP_SYNTAX  = 'php_syntax'
     CHECK_PHP_CS      = 'php_cs'
     CHECK_JS_SYNTAX   = 'js_syntax'
@@ -12,76 +24,44 @@ class VcsCommitSniffer:
     CHECK_RUBY_CS     = 'ruby_cs'
     CHECK_UTF_BOM     = 'utf_bom'
 
+    # def __init__(self):
+        # self.options = {}
+
+    def run_command(self, command):
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        (output, err) = p.communicate()
+        return output
+
+    def is_php_file(self, file):
+        return bool(re.match('.*\.('+')|('.join(self.options['php']['extensions'])+')', file))
+
     # Check PHP syntax
-    def _check_php_syntax(file):
-        p = Popen("php -l "+file, shell=True, stdout=PIPE)
-        output = p.communicate()[0]
+    def check_php_syntax(self, file):
+        # Check file extension and file existence
+        if not self.is_php_file(file) or not os.path.isfile(file):
+            return
+
+        # Run check PHP syntax command
+        output = self.run_command(self.options['php']['check_syntax'].replace('%file%', file))
 
         # Is PHP file valid?
         if not re.match('No syntax errors detected', output):
-            raise VcsCommitSnifferException('PHP syntax error in file: '+file+' please run php -l '+file+' to get more info.')
+            raise VcsCommitSnifferException('PHP syntax error in '+file+': '+output)
 
+    # Check PHP coding standard
+    def check_php_cs(self, file):
+        # Check file extension and file existence
+        if not self.is_php_file(file) or not os.path.isfile(file):
+            return
 
-# def precommit_check(ui, repo, **kwargs):
-#     # Set folders to check
-#     foldersToCheck = [
-#         '(app/commands/)',
-#         '(app/components/)',
-#         '(app/config/)',
-#         '(app/controllers/)',
-#         '(app/models/)',
-#         '(app/vendors/)',
-#     ]
-#     foldersToIgnore = [
-#         '(app/vendors)',
-#     ]
+        # Run PHP coding standard check
+        output = self.run_command(self.options['php']['check_cs'].replace('%file%', file))
 
-#     # Get parent folder path (repo root folder)
-#     baseRepoPath = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))+'/'
+        # Is PHP file coding standard valid?
+        if output != '':
+            raise VcsCommitSnifferException("PHP coding standard errors: \n"+output)
 
-#     # Loop through each file for the current changeset
-#     for currentFile in repo[None].files():
-#         # Check PHP Files
-#         if re.match('.*\.(php)|(php4)|(php5)', currentFile):
-#             # Check PHP syntax
-#             p = Popen("php -l "+baseRepoPath+currentFile, shell=True, stdout=PIPE)
-#             output = p.communicate()[0]
+sniffer = VcsCommitSniffer()
 
-#             # File exist?
-#             if os.path.isfile(baseRepoPath+currentFile):
-
-#                 # Is PHP file valid?
-#                 if not re.match('No syntax errors detected', output):
-#                     ui.warn('\n-----------------------\n')
-#                     ui.warn("PHP syntax error in file: "+baseRepoPath+currentFile+" please run php -l <file> to get more info.")
-#                     ui.warn('\n-----------------------\n')
-#                     return 1
-
-#                 # Check PHP coding standards for specidied folders
-#                 if re.match(string.join(foldersToCheck, '|'), currentFile) and not re.match(string.join(foldersToIgnore, '|'), currentFile):
-#                     # Run php CS check
-#                     p = Popen("phpcs --standard=zend --report=emacs "+baseRepoPath+currentFile, shell=True, stdout=PIPE)
-#                     output = p.communicate()[0]
-
-#                     if output != '':
-#                         # Show warning for user
-#                         ui.warn('\n-----------------------\n')
-#                         ui.warn(output)
-#                         ui.warn('-----------------------\n')
-
-#                         # Reject the changesets
-#                         return 1
-
-#                 # Check valid file encoding
-#                 f = open(baseRepoPath+currentFile, "rb")
-
-#                 byte0 = ord(f.read(1))
-#                 byte1 = ord(f.read(1))
-#                 byte2 = ord(f.read(1))
-
-#                 if byte0 == int("EF", 16) and byte1 == int("BB", 16) and byte2 == int("BF", 16):
-#                     ui.warn("File '"+baseRepoPath+currentFile+"' starts with invalid bytes EF BB BF (UTF-8 with BOM). Please remove this bytes from file use HEX editor or mc editor.")
-#                     return 1
-
-#     # All allright
-#     return 0
+sniffer.check_php_syntax('/var/www/vcs_commit_sniffer/test.php')
+sniffer.check_php_cs('/var/www/vcs_commit_sniffer/test.php')
