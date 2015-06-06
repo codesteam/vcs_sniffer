@@ -3,10 +3,10 @@ import os
 import string
 import subprocess
 
-class VcsCommitSnifferException(Exception):
+class VcsSnifferException(Exception):
     pass
 
-class VcsCommitSniffer:
+class VcsSniffer:
     options = {
         'php' : {
             'extensions'   : ['php', 'php4', 'php5'],
@@ -46,7 +46,7 @@ class VcsCommitSniffer:
 
         # Is PHP file valid?
         if not re.match('No syntax errors detected', output):
-            raise VcsCommitSnifferException('PHP syntax error in '+file+': '+output)
+            raise VcsSnifferException('PHP syntax error in '+file+': '+output)
 
     # Check PHP coding standard
     def check_php_cs(self, file):
@@ -59,9 +59,9 @@ class VcsCommitSniffer:
 
         # Is PHP file coding standard valid?
         if output != '':
-            raise VcsCommitSnifferException("PHP coding standard errors: \n"+output)
+            raise VcsSnifferException("PHP coding standard errors: \n"+output)
 
-sniffer = VcsCommitSniffer()
+# sniffer = VcsSniffer()
 
-sniffer.check_php_syntax('/var/www/vcs_commit_sniffer/test.php')
-sniffer.check_php_cs('/var/www/vcs_commit_sniffer/test.php')
+# sniffer.check_php_syntax('/var/www/vcs_commit_sniffer/test.php')
+# sniffer.check_php_cs('/var/www/vcs_commit_sniffer/test.php')
