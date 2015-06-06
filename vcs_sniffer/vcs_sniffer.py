@@ -49,7 +49,7 @@ class VcsSniffer:
 
     # Return true if file contain PHP code
     def is_php_file(self, file):
-        return bool(re.match('.*\.('+'|'.join(self.options['php']['extensions'])+')', file))
+        return bool(re.match('.*\.('+'|'.join(self.options['php']['extensions'])+')$', file))
 
     # Check PHP syntax
     def check_php_syntax(self, file):
