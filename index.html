@@ -20,6 +20,16 @@
 
     <section class="main-content">
       <h3>
+<a id="supported-sniffs" class="anchor" href="#supported-sniffs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported sniffs</h3>
+
+<p>Specifically, we support checks for dynamic languages. More specific support checks is provided below.</p>
+
+<ul>
+<li>PHP syntax check.</li>
+<li>PHP coding standard check (we use PHPCodeSniffer).</li>
+</ul>
+
+<h3>
 <a id="usage-as-hg-extension" class="anchor" href="#usage-as-hg-extension" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage as hg extension</h3>
 
 <p>You can use <code>VSC_sniffer</code> as hg extension. For example, if you were to run</p>
@@ -34,6 +44,8 @@ $ git clone git@github.com:codesteam/vcs_sniffer.git .
 <pre><code>[extensions]
 vcs_sniffer = /var/www/vcs_sniffer/vcs_sniffer
 </code></pre>
+
+<p>and then when you will commit into <code>hg</code> file with invalid PHP syntax it will give you something like this:</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/codesteam/vcs_sniffer">VCS commits sniffer</a> is maintained by <a href="https://github.com/codesteam">codesteam</a>.</span>
