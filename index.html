@@ -26,7 +26,9 @@
 
 <ul>
 <li>PHP syntax check.</li>
-<li>PHP coding standard check (we use PHPCodeSniffer).</li>
+<li>PHP coding standard check (we use <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHPCodeSniffer</a>).</li>
+<li>ruby syntax check.</li>
+<li>ruby coding standard check (we use <a href="https://github.com/bbatsov/rubocop">rubocop</a>).</li>
 </ul>
 
 <h3>
@@ -42,7 +44,7 @@ $ git clone git@github.com:codesteam/vcs_sniffer.git .
 <p>And then add this lines into your <code>hgrc</code> config:</p>
 
 <pre><code>[extensions]
-vcs_sniffer = /var/www/vcs_sniffer/vcs_sniffer
+vcs_sniffer = ~/.hgext/vcs_sniffer/vcs_sniffer
 </code></pre>
 
 <p>and then when you will commit into <code>hg</code> file with invalid PHP syntax it will give you something like this:</p>
