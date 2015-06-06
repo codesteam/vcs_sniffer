@@ -9,22 +9,15 @@ class VcsSnifferException(Exception):
     pass
 
 class VcsSniffer:
+    # Sniffers options
     options = {
         'php' : {
             'extensions'   : ['php', 'php4', 'php5'],
             'check_syntax' : 'php -l %file%',
             'check_cs'     : 'phpcs --standard=zend --report=emacs %file%'
-        }
+        },
+        'utf_bom' : True
     }
-
-    # Sniffers list
-    CHECK_PHP_SYNTAX  = 'php_syntax'
-    CHECK_PHP_CS      = 'php_cs'
-    CHECK_JS_SYNTAX   = 'js_syntax'
-    CHECK_JS_CS       = 'js_cs'
-    CHECK_RUBY_SYNTAX = 'ruby_syntax'
-    CHECK_RUBY_CS     = 'ruby_cs'
-    CHECK_UTF_BOM     = 'utf_bom'
 
     # Setup sniffer options
     def __init__(self, config_file):
@@ -63,11 +56,23 @@ class VcsSniffer:
         if output != '':
             raise VcsSnifferException("PHP coding standard errors: \n"+output)
 
+    # Check valid file encoding
+    def check_utf_bom(self, file):
+        f     = open(file, "rb")
+        byte0 = ord(f.read(1))
+        byte1 = ord(f.read(1))
+        byte2 = ord(f.read(1))
+        if byte0 == int("EF", 16) and byte1 == int("BB", 16) and byte2 == int("BF", 16):
+            raise VcsSnifferException("File '"+file+"' starts with invalid bytes EF BB BF (UTF-8 with BOM). Please remove this bytes from file use HEX editor or mc editor.")
+
     # Sniff current file
     def sniff(self, file):
         if not os.path.isfile(file):
             return
 
-        if self.is_php_file(file):
+        if self.options['php'] and self.is_php_file(file):
             self.check_php_syntax(file)
             self.check_php_cs(file)
+
+        if self.options['utf_bom']:
+            self.check_utf_bom(file)
