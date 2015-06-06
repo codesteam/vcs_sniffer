@@ -1,7 +1,9 @@
-import re
+import collections
 import os
+import re
 import string
 import subprocess
+import yaml
 
 class VcsSnifferException(Exception):
     pass
@@ -24,8 +26,20 @@ class VcsSniffer:
     CHECK_RUBY_CS     = 'ruby_cs'
     CHECK_UTF_BOM     = 'utf_bom'
 
-    # def __init__(self):
-        # self.options = {}
+    # Setup sniffer options
+    def __init__(self, config_file):
+        if os.path.isfile(config_file):
+            self.options = self.merge_two_dicts(self.options, yaml.load(open(config_file, 'r')))
+
+    # Update value of a nested dictionary of varying depth
+    def merge_two_dicts(self, d, u):
+        for k, v in u.iteritems():
+            if isinstance(v, collections.Mapping):
+                r = self.merge_two_dicts(d.get(k, {}), v)
+                d[k] = r
+            else:
+                d[k] = u[k]
+        return d
 
     # Run CLI command
     def run_command(self, command):
@@ -35,7 +49,7 @@ class VcsSniffer:
 
     # Return true if file contain PHP code
     def is_php_file(self, file):
-        return bool(re.match('.*\.('+')|('.join(self.options['php']['extensions'])+')', file))
+        return bool(re.match('.*\.('+'|'.join(self.options['php']['extensions'])+')', file))
 
     # Check PHP syntax
     def check_php_syntax(self, file):

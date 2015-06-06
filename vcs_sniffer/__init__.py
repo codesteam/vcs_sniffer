@@ -3,7 +3,7 @@ import vcs_sniffer
 # Repository precommit hook
 def precommit(ui, repo, **kwargs):
     try:
-        sniffer = vcs_sniffer.VcsSniffer()
+        sniffer = vcs_sniffer.VcsSniffer(repo.root+'/vcs_sniffer.yaml')
         for file in repo[None].files():
             sniffer.sniff(repo.root+'/'+file)
         return 0
