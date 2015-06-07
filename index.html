@@ -1,63 +1,62 @@
 <!DOCTYPE html>
+<!-- saved from url=(0039)http://codesteam.github.io/vcs_sniffer/ -->
 <html lang="en-us">
-  <head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <title>VCS commits sniffer by codesteam</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="./assets/normalize.css" media="screen">
+    <link href="./assets/css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="./assets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="./assets/github-light.css" media="screen">
+</head>
+<body>
     <section class="page-header">
-      <h1 class="project-name">VCS commits sniffer</h1>
-      <h2 class="project-tagline">Check your code before commit to VCS (hg or git)</h2>
-      <a href="https://github.com/codesteam/vcs_sniffer" class="btn">View on GitHub</a>
-      <a href="https://github.com/codesteam/vcs_sniffer/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/codesteam/vcs_sniffer/tarball/master" class="btn">Download .tar.gz</a>
+        <h1 class="project-name">VCS commits sniffer</h1>
+        <h2 class="project-tagline">Check your code before commit to VCS (hg or git)</h2>
+        <a href="https://github.com/codesteam/vcs_sniffer" class="btn">View on GitHub</a>
+        <a href="https://github.com/codesteam/vcs_sniffer/zipball/master" class="btn">Download .zip</a>
+        <a href="https://github.com/codesteam/vcs_sniffer/tarball/master" class="btn">Download .tar.gz</a>
     </section>
-
     <section class="main-content">
-      <h3>
-<a id="supported-sniffs" class="anchor" href="#supported-sniffs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported sniffs</h3>
+        <h3>
+            <a id="supported-sniffs" class="anchor" href="http://codesteam.github.io/vcs_sniffer/#supported-sniffs" aria-hidden="true">
+                <span class="octicon octicon-link"></span>
+            </a>Supported sniffs
+        </h3>
+            <p>Specifically, we support checks for dynamic languages. More specific support checks is provided below.</p>
+            <ul>
+                <li>PHP syntax check.</li>
+                <li>PHP coding standard check (we use <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHPCodeSniffer</a>).</li>
+                <li>ruby syntax check.</li>
+                <li>ruby coding standard check (we use <a href="https://github.com/bbatsov/rubocop">rubocop</a>).</li>
+            </ul>
 
-<p>Specifically, we support checks for dynamic languages. More specific support checks is provided below.</p>
+        <h3>
+            <a id="usage-as-hg-extension" class="anchor" href="http://codesteam.github.io/vcs_sniffer/#usage-as-hg-extension" aria-hidden="true">
+                <span class="octicon octicon-link"></span>
+            </a>Usage as hg extension
+        </h3>
 
-<ul>
-<li>PHP syntax check.</li>
-<li>PHP coding standard check (we use <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHPCodeSniffer</a>).</li>
-<li>ruby syntax check.</li>
-<li>ruby coding standard check (we use <a href="https://github.com/bbatsov/rubocop">rubocop</a>).</li>
-</ul>
-
-<h3>
-<a id="usage-as-hg-extension" class="anchor" href="#usage-as-hg-extension" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage as hg extension</h3>
-
-<p>You can use <code>VSC_sniffer</code> as hg extension. For example, if you were to run</p>
+        <p>You can use <code>VSC_sniffer</code> as hg extension. For example, if you were to run</p>
 
 <pre><code>$ mkdir ~/.hgext/vcs_sniffer
 $ cd ~/.hgext/vcs_sniffer
 $ git clone git@github.com:codesteam/vcs_sniffer.git .
 </code></pre>
 
-<p>And then add this lines into your <code>hgrc</code> config:</p>
+        <p>And then add this lines into your <code>hgrc</code> config:</p>
 
 <pre><code>[extensions]
 vcs_sniffer = ~/.hgext/vcs_sniffer/vcs_sniffer
 </code></pre>
 
-<p>and then when you will commit into <code>hg</code> file with invalid PHP syntax it will give you something like this:</p>
+        <p>and then when you will commit into <code>hg</code> file with invalid PHP syntax it will give you something like this:</p>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/codesteam/vcs_sniffer">VCS commits sniffer</a> is maintained by <a href="https://github.com/codesteam">codesteam</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
+        <footer class="site-footer">
+            <span class="site-footer-owner"><a href="https://github.com/codesteam/vcs_sniffer">VCS commits sniffer</a> is maintained by <a href="https://github.com/codesteam">codesteam</a>.</span>
+        </footer>
     </section>
-
-  
-  </body>
+</body>
 </html>
-
