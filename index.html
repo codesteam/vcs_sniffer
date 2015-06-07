@@ -78,15 +78,15 @@ vcs_sniffer = ~/.hgext/vcs_sniffer/vcs_sniffer
 
 
         <p>See config example below:</p>
-<pre><code>utf_bom: true
-php:
-  extensions:
+<pre><code>utf_bom: true                                            # Check UTF encoding in file
+php:                                                     # PHP specified settings
+  extensions:                                            # List of PHP files extensions
     - php
     - php4
     - php5
-  check_syntax: php -l %file%
-  check_cs: phpcs --standard=zend --report=emacs %file%
-  ignore:
+  check_syntax: php -l %file%                            # PHP syntax check command
+  check_cs: phpcs --standard=zend --report=emacs %file%  # PHP coding standard check cmd
+  ignore:                                                # Folders to ignore
     - vendors
 </code></pre>
 
