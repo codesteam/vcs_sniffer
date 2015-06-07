@@ -10,19 +10,29 @@ class VcsSnifferException(Exception):
 
 class VcsSniffer:
     # Sniffers options
-    options = {
+    repo_root = ''
+    options   = {
         'php' : {
             'extensions'   : ['php', 'php4', 'php5'],
             'check_syntax' : 'php -l %file%',
-            'check_cs'     : 'phpcs --standard=zend --report=emacs %file%'
+            'check_cs'     : 'phpcs --standard=zend --report=emacs %file%',
+            'ignore'       : [
+                'vendor',
+            ]
         },
         'utf_bom' : True
     }
 
     # Setup sniffer options
-    def __init__(self, config_file):
+    def __init__(self, repo_root):
+        self.repo_root = repo_root+'/'
+        config_file    = self.repo_root+'/vcs_sniffer.yaml'
         if os.path.isfile(config_file):
             self.options = self.merge_two_dicts(self.options, yaml.load(open(config_file, 'r')))
+
+        for k, v in self.options.iteritems():
+            if isinstance(self.options[k], dict) and 'ignore' in self.options[k]:
+                self.options[k]['ignore'] = [self.repo_root + s for s in self.options[k]['ignore']]
 
     # Update value of a nested dictionary of varying depth
     def merge_two_dicts(self, d, u):
@@ -42,7 +52,10 @@ class VcsSniffer:
 
     # Return true if file contain PHP code
     def is_php_file(self, file):
-        return bool(file.lower().endswith(tuple(self.options['php']['extensions'])))
+        return (
+            bool(not file.lower().startswith(tuple(self.options['php']['ignore']))) and
+            bool(file.lower().endswith(tuple(self.options['php']['extensions'])))
+        )
 
     # Check PHP syntax
     def check_php_syntax(self, file):
@@ -67,6 +80,7 @@ class VcsSniffer:
 
     # Sniff current file
     def sniff(self, file):
+        file = self.repo_root + file
         if not os.path.isfile(file):
             return
 
