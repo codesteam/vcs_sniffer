@@ -13,9 +13,17 @@ class VcsSniffer:
     repo_root = ''
     options   = {
         'php' : {
-            'extensions'   : ['php', 'php4', 'php5'],
+            'extensions'   : ['.php', '.php4', '.php5'],
             'check_syntax' : 'php -l %file%',
             'check_cs'     : 'phpcs --standard=zend --report=emacs %file%',
+            'ignore'       : [
+                'vendor',
+            ]
+        },
+        'ruby' : {
+            'extensions'   : ['.rb'],
+            'check_syntax' : 'ruby -c %file%',
+            'check_cs'     : 'rubocop %file%',
             'ignore'       : [
                 'vendor',
             ]
@@ -57,11 +65,24 @@ class VcsSniffer:
             bool(file.lower().endswith(tuple(self.options['php']['extensions'])))
         )
 
+    # Return true if file contain ruby code
+    def is_ruby_file(self, file):
+        return (
+            bool(not file.lower().startswith(tuple(self.options['ruby']['ignore']))) and
+            bool(file.lower().endswith(tuple(self.options['ruby']['extensions'])))
+        )
+
     # Check PHP syntax
     def check_php_syntax(self, file):
         output = self.run_command(self.options['php']['check_syntax'].replace('%file%', file))
         if not re.match('No syntax errors detected', output):
             raise VcsSnifferException('PHP syntax error in '+file+': '+output)
+
+    # Check ruby syntax
+    def check_ruby_syntax(self, file):
+        output = self.run_command(self.options['ruby']['check_syntax'].replace('%file%', file))
+        if not re.match('Syntax OK', output):
+            raise VcsSnifferException('ruby syntax error in '+file+': '+output)
 
     # Check PHP coding standard
     def check_php_cs(self, file):
@@ -69,12 +90,22 @@ class VcsSniffer:
         if output != '':
             raise VcsSnifferException("PHP coding standard errors: \n"+output)
 
+    # Check ruby coding standard
+    def check_ruby_cs(self, file):
+        output = self.run_command(self.options['ruby']['check_cs'].replace('%file%', file))
+        if 'no offenses detected' not in output:
+            raise VcsSnifferException("ruby coding standard errors: \n"+output)
+
     # Check valid file encoding
     def check_utf_bom(self, file):
-        f     = open(file, "rb")
-        byte0 = ord(f.read(1))
-        byte1 = ord(f.read(1))
-        byte2 = ord(f.read(1))
+        try:
+            f     = open(file, "rb")
+            byte0 = ord(f.read(1))
+            byte1 = ord(f.read(1))
+            byte2 = ord(f.read(1))
+        except Exception as e:
+            return
+
         if byte0 == int("EF", 16) and byte1 == int("BB", 16) and byte2 == int("BF", 16):
             raise VcsSnifferException("File '"+file+"' starts with invalid bytes EF BB BF (UTF-8 with BOM). Please remove this bytes from file use HEX editor or mc editor.")
 
@@ -87,6 +118,10 @@ class VcsSniffer:
         if self.options['php'] and self.is_php_file(file):
             self.check_php_syntax(file)
             self.check_php_cs(file)
+
+        if self.options['ruby'] and self.is_ruby_file(file):
+            self.check_ruby_syntax(file)
+            self.check_ruby_cs(file)
 
         if self.options['utf_bom']:
             self.check_utf_bom(file)

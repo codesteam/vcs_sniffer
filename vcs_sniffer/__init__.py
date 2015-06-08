@@ -1,5 +1,6 @@
 import os
 import vcs_sniffer
+import fnmatch
 
 from mercurial import cmdutil
 
@@ -27,15 +28,24 @@ def reposetup(ui, repo):
 # Sniff all files in repo folder
 @command('sniff')
 def sniff(ui, repo, remote_name=None):
-    onlyfiles = [ f for f in os.listdir(repo.root) if os.path.isfile(os.path.join(repo.root,f)) ]
+    repo_files = []
+    for root, dirs, files in os.walk(repo.root):
+        for filename in fnmatch.filter(files, '*.*'):
+            file = os.path.join(root, filename)
+            if not file.lower().startswith(repo.root+'/.hg'):
+                repo_files.append(file.replace(repo.root+'/', ''))
+
     sniffer   = vcs_sniffer.VcsSniffer(repo.root)
     errors    = []
-    for file in onlyfiles:
+    for file in repo_files:
         try:
             sniffer.sniff(file)
         except vcs_sniffer.VcsSnifferException as e:
             errors.append(str(e).strip('\n'))
 
-    print separator
-    print separator.join(errors)
-    print separator
+    if len(errors):
+        print separator
+        print separator.join(errors)
+        print separator
+    else:
+        print 'No errors found'
