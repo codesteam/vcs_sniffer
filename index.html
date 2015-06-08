@@ -81,11 +81,18 @@ vcs_sniffer = ~/.hgext/vcs_sniffer/vcs_sniffer
 <pre><code>utf_bom: true                                            # Check UTF encoding in file
 php:                                                     # PHP specified settings
   extensions:                                            # List of PHP files extensions
-    - php
-    - php4
-    - php5
+    - .php
+    - .php4
+    - .php5
   check_syntax: php -l %file%                            # PHP syntax check command
   check_cs: phpcs --standard=zend --report=emacs %file%  # PHP coding standard check cmd
+  ignore:                                                # Folders to ignore
+    - vendors
+ruby:                                                    # Ruby specified settings
+  extensions:                                            # List of ruby files extensions
+   - .rb
+  check_syntax: ruby -c %file%                           # Ruby syntax check command
+  check_cs: rubocop %file%                               # Ruby coding standard check cmd
   ignore:                                                # Folders to ignore
     - vendors
 </code></pre>
