@@ -26,7 +26,7 @@
             The VCS sniffer lets you have check all your code before commit into VCS system (hg or git).
             It can restrict changes if your code is not valid.
             It is designed to make programming easier by making automation coding standard check.
-            VCS sniffer require VCS and python only.
+            VCS sniffer requires VCS and python only.
         </p>
         <h3>
             <a id="supported-sniffs" class="anchor" href="http://codesteam.github.io/vcs_sniffer/#supported-sniffs" aria-hidden="true">
@@ -49,21 +49,21 @@
         </h3>
         <hr/>
 
-        <h4>How install?</h4>
-        <p>You can use <code>VSC_sniffer</code> as hg extension. For example, if you were to run</p>
+        <h4>How to install?</h4>
+        <p>You can use <code>VSC_sniffer</code> as hg extension. Run commands</p>
 
 <pre><code>$ mkdir ~/.hgext/vcs_sniffer
 $ cd ~/.hgext/vcs_sniffer
 $ git clone git@github.com:codesteam/vcs_sniffer.git .
 </code></pre>
 
-        <p>And then add this lines into your <code>hgrc</code> config:</p>
+        <p>Add these lines into your <code>hgrc</code> config:</p>
 
 <pre><code>[extensions]
 vcs_sniffer = ~/.hgext/vcs_sniffer/vcs_sniffer
 </code></pre>
 
-        <p>and then when you will commit into <code>hg</code> file with invalid PHP syntax it will give you something like this:</p>
+        <p>Then when you commit into <code>hg</code> file with invalid PHP syntax it will give you something like this:</p>
 
         <h4>Sniff command</h4>
         When the extension is properly installed, you can run command <code>hg sniff</code> to check all files in current repository folder.
@@ -71,7 +71,7 @@ vcs_sniffer = ~/.hgext/vcs_sniffer/vcs_sniffer
         <h4>Configuration</h4>
 
         <p>
-            If you want change default VCS sniffer settings just add <code>vcs_sniffer.yaml</code> into repository root. 
+            If you want to change default VCS sniffer settings just add <code>vcs_sniffer.yaml</code> into repository root. 
             VCS sniffer use PyYAML for parsing <code>yaml</code> files. You must install it before custom configuration usage:
         </p>
         <pre><code>pip install pyyaml</code></pre>
